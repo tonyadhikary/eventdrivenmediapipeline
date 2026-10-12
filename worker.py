@@ -40,4 +40,14 @@ def poll_queue():
                         s3_client.upload_file(upload_path, PROCESSED_BUCKET, f'processed_{file_name}')
                         os.remove(download_path)
                         os.remove(upload_path)
-                        
+                sqs_client.delete_message(
+                    QueueUrl=QUEUE_URL,
+                    ReceiptHandle=message['ReceiptHandle']
+                ) 
+                print("Message processed and deleted from SQS, waiting for next message")
+
+if __name__ == "__main__":
+    poll_queue()
+
+#looks enough for now
+#have to edit the queue url n bucket url 
